@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"gateway-service/entities"
-	"gateway-service/usecases"
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/usecases"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

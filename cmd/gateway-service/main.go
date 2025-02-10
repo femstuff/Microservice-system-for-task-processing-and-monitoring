@@ -14,15 +14,16 @@ func main() {
 		Addr: "localhost:6379",
 	})
 
+	taskRepo := repository.NewRedisTaskRepository(redisClient)
+	taskUseCase := usecases.NewTaskUseCase(taskRepo)
+	taskHandler := handlers.NewTaskHandler(taskUseCase)
+
 	router := gin.Default()
+	router.POST("/task", taskHandler.CreateTask)
+	router.GET("/result", taskHandler.GetTaskResult)
 
-	repo := repository.NewRedisTaskRepository(redisClient)
-	uc := usecases.NewTaskUseCase(repo)
-	handl := handlers.NewTaskHandler(uc)
-
-	router.POST("/task", handl.CreateTask)
-	router.GET("/result", handl.GetTaskResult)
+	log.Println("API Gateway запущен на :8080")
 	if err := router.Run(":8080"); err != nil {
-		log.Fatalf("Ошибка при запуске: %v", err)
+		log.Fatalf("Ошибка при запуске сервера: %v", err)
 	}
 }

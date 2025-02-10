@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"gateway-service/entities"
-	"gateway-service/repository"
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/repository"
 )
 
 type TaskUseCase struct {

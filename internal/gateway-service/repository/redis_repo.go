@@ -2,8 +2,7 @@ package repository
 
 import (
 	"context"
-	"gateway-service/entities"
-
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
 	"github.com/go-redis/redis/v8"
 )
 
