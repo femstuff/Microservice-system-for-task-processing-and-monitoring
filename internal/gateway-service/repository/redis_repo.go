@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
 	"github.com/go-redis/redis/v8"
+	"log"
 )
 
 type TaskRepo interface {
@@ -21,7 +22,11 @@ func NewRedisTaskRepository(client *redis.Client) *RedisTaskRepo {
 
 func (r *RedisTaskRepo) SaveTask(task entities.Task) error {
 	ctx := context.Background()
-	return r.client.Set(ctx, "task_"+task.ID, task.Data, 0).Err()
+	err := r.client.Set(ctx, "task_"+task.ID, task.Data, 0).Err()
+	if err != nil {
+		log.Printf("Ошибка при сохранении задачи в Redis: %v", err)
+	}
+	return err
 }
 
 func (r *RedisTaskRepo) GetTaskResult(id string) (*entities.TaskResult, error) {

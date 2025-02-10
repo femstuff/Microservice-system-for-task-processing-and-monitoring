@@ -36,6 +36,7 @@ func (t *TaskHanlder) GetTaskResult(c *gin.Context) {
 
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Параметр id не может быть пустым"})
+		return
 	}
 
 	res, err := t.taskUseCase.GetTaskResult(id)
