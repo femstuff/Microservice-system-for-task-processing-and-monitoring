@@ -2,14 +2,16 @@ package repository
 
 import (
 	"context"
+	"log"
+
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
 	"github.com/go-redis/redis/v8"
-	"log"
 )
 
 type TaskRepo interface {
 	SaveTask(task entities.Task) error
 	GetTaskResult(id string) (*entities.TaskResult, error)
+	TaskExists(id string) (bool, error)
 }
 
 type RedisTaskRepo struct {
@@ -40,4 +42,14 @@ func (r *RedisTaskRepo) GetTaskResult(id string) (*entities.TaskResult, error) {
 		ID:     id,
 		Result: val,
 	}, nil
+}
+
+func (r *RedisTaskRepo) TaskExists(id string) (bool, error) {
+	ctx := context.Background()
+	exists, err := r.client.Exists(ctx, "task_"+id).Result()
+	if err != nil {
+		return false, err
+	}
+
+	return exists == 1, nil
 }

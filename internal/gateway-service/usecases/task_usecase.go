@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/repository"
 )
@@ -14,6 +15,15 @@ func NewTaskUseCase(repo repository.TaskRepo) *TaskUseCase {
 }
 
 func (uc *TaskUseCase) CreateTask(task entities.Task) error {
+	exists, err := uc.repo.TaskExists(task.ID)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return fmt.Errorf(err.Error(), "Задача с таким id = %s, уже существует", task.ID)
+	}
+
 	return uc.repo.SaveTask(task)
 }
 
