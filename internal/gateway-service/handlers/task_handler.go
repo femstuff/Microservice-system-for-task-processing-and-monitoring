@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/usecases"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type TaskHanlder struct {
@@ -15,16 +17,19 @@ func NewTaskHandler(taskUseCase *usecases.TaskUseCase) *TaskHanlder {
 	return &TaskHanlder{taskUseCase: taskUseCase}
 }
 
-func (t *TaskHanlder) CreateTask(c *gin.Context) {
+func (h *TaskHanlder) CreateTask(c *gin.Context) {
 	var task entities.Task
-
 	if err := c.ShouldBindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат данных"})
 		return
 	}
 
-	if err := t.taskUseCase.CreateTask(task); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании задачи"})
+	if err := h.taskUseCase.CreateTask(task); err != nil {
+		if strings.Contains(err.Error(), "уже существует") {
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании задачи"})
+		}
 		return
 	}
 
@@ -34,8 +39,9 @@ func (t *TaskHanlder) CreateTask(c *gin.Context) {
 func (t *TaskHanlder) GetTaskResult(c *gin.Context) {
 	id := c.Query("id")
 
-	if id == "" {
+	if len(id) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Параметр id не может быть пустым"})
+		return
 	}
 
 	res, err := t.taskUseCase.GetTaskResult(id)
