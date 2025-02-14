@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/shared/config"
 	"log"
 
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/handlers"
@@ -11,8 +12,13 @@ import (
 )
 
 func main() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Ошибка при загрузке конфигурации: %v", err)
+	}
+
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: cfg.RedisAddr,
 	})
 
 	taskRepo := repository.NewRedisTaskRepository(redisClient)
@@ -23,8 +29,8 @@ func main() {
 	router.POST("/task", taskHandler.CreateTask)
 	router.GET("/result", taskHandler.GetTaskResult)
 
-	log.Println("Gateway запущен на :8080")
-	if err := router.Run(":8080"); err != nil {
+	log.Printf("Gateway запущен на %v \n", cfg.ServerPort)
+	if err := router.Run(cfg.ServerPort); err != nil {
 		log.Fatalf("Ошибка при запуске сервера: %v", err)
 	}
 }
