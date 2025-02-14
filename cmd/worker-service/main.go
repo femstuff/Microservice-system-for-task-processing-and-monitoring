@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 
@@ -17,9 +18,13 @@ func main() {
 		Addr: "localhost:6379",
 	})
 
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		log.Fatalf("Ошибка подключения к Redis: %v", err)
+	}
+
 	repo := repository.NewRedisTaskRepository(redisClient)
 	uc := usecases.NewTaskUseCase(repo)
-	handl := handlers.NewTaskHandler(uc)
+	handler := handlers.NewTaskHandler(uc)
 
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
@@ -34,18 +39,31 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"tasks", false, false, false, false, nil)
+		"tasks",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
 	if err != nil {
-		log.Fatalf("Ошибка объявления очкреди: %v", err)
+		log.Fatalf("Ошибка объявления очереди: %v", err)
 	}
 
 	msgs, err := ch.Consume(
-		q.Name, "", true, false, false, false, nil)
+		q.Name,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
 	if err != nil {
-		log.Fatalf("ОШибка регистрации потребителя: %v", err)
+		log.Fatalf("Ошибка регистрации потребителя: %v", err)
 	}
 
-	log.Println("Worker service запущен")
+	log.Println("Worker Service запущен и ожидает задачи...")
 
 	for msg := range msgs {
 		var task entities.Task
@@ -57,9 +75,11 @@ func main() {
 			continue
 		}
 
-		if err := handl.HandleTask(task); err != nil {
+		if err := handler.HandleTask(task); err != nil {
 			log.Printf("Ошибка обработки задачи: %v", err)
-			return
+			msg.Nack(false, true)
+		} else {
+			msg.Ack(false)
 		}
 	}
 }

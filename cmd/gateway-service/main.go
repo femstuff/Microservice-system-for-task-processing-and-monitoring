@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/handlers"
@@ -14,6 +15,10 @@ func main() {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 	})
+
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		log.Fatalf("Ошибка подключения к Redis: %v", err)
+	}
 
 	taskRepo := repository.NewRedisTaskRepository(redisClient)
 	taskUseCase := usecases.NewTaskUseCase(taskRepo)
