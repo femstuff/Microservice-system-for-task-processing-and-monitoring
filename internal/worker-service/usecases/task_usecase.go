@@ -13,11 +13,6 @@ func NewTaskUseCase(repo repository.TaskRepository) *TaskUseCase {
 	return &TaskUseCase{repo: repo}
 }
 
-func (uc *TaskUseCase) ProcessTask(task entities.Task) error {
-	res := entities.TaskResult{
-		ID:     task.ID,
-		Result: task.Data * task.Data,
-	}
-
-	return uc.repo.SaveTaskResult(res)
+func (uc *TaskUseCase) ProcessTask(result entities.TaskResult) error {
+	return uc.repo.SaveTaskResult(result)
 }
