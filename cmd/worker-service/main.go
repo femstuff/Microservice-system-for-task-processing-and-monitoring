@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/shared/config"
 	"log"
 
 	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/worker-service/entities"
@@ -14,8 +15,13 @@ import (
 )
 
 func main() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Ошибка при загрузке конфигурации: %v", err)
+	}
+
 	redisClient := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: cfg.RedisAddr,
 	})
 
 	if err := redisClient.Ping(context.Background()).Err(); err != nil {
@@ -26,7 +32,7 @@ func main() {
 	uc := usecases.NewTaskUseCase(repo)
 	handler := handlers.NewTaskHandler(uc)
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(cfg.RabbitMQURL)
 	if err != nil {
 		log.Fatalf("Ошибка подключения к RabbitMQ: %v", err)
 	}

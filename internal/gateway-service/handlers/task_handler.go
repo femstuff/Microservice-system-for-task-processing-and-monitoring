@@ -12,15 +12,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TaskHanlder struct {
+type TaskHandler struct {
 	taskUseCase *usecases.TaskUseCase
 }
 
-func NewTaskHandler(taskUseCase *usecases.TaskUseCase) *TaskHanlder {
-	return &TaskHanlder{taskUseCase: taskUseCase}
+func NewTaskHandler(taskUseCase *usecases.TaskUseCase) *TaskHandler {
+	return &TaskHandler{taskUseCase: taskUseCase}
 }
 
-func (t *TaskHanlder) CreateTask(c *gin.Context) {
+func (t *TaskHandler) CreateTask(c *gin.Context) {
 	var task entities.Task
 	log.Print("CreateTask вызван")
 
@@ -75,7 +75,7 @@ func (t *TaskHanlder) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Задача успешно создана и отправлена", "task_id": task.ID})
 }
 
-func (t *TaskHanlder) GetTaskResult(c *gin.Context) {
+func (t *TaskHandler) GetTaskResult(c *gin.Context) {
 	id := c.Query("id")
 
 	if len(id) == 0 {
