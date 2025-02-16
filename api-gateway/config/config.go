@@ -13,7 +13,7 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	redisAddress := os.Getenv("REDIS_ADDRESS")
 	if redisAddress == "" {
-		redisAddress = "localhost:6379"
+		redisAddress = "redis:6379"
 	}
 
 	rabbitMQURL := os.Getenv("RABBITMQ_URL")
