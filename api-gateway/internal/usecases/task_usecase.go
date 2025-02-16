@@ -3,8 +3,8 @@ package usecases
 import (
 	"fmt"
 
-	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
-	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/repository"
+	"api-gateway/internal/entities"
+	"api-gateway/internal/repository"
 )
 
 type TaskUseCase struct {

@@ -4,7 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
+	"api-gateway/internal/entities"
+
 	"github.com/go-redis/redis/v8"
 )
 

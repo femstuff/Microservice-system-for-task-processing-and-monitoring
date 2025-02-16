@@ -1,8 +1,9 @@
 GATEWAY_BIN = gateway-service
 WORKER_BIN = worker-service
+DOCKER_COMPOSE = docker compose
 
-GATEWAY_DIR = ./cmd/gateway-service
-WORKER_DIR = ./cmd/worker-service
+GATEWAY_DIR = ./api-gateway/cmd/gateway-service
+WORKER_DIR = ./worker-service/cmd/worker
 
 BUILD_FLAGS = -ldflags="-s -w"
 
@@ -32,3 +33,26 @@ stop:
 	@echo "Остановка всех сервисов..."
 	@pkill -f $(GATEWAY_BIN) || true
 	@pkill -f $(WORKER_BIN) || true
+
+dc_build:
+	$(DOCKER_COMPOSE) build
+
+dc_up:
+	$(DOCKER_COMPOSE) up -d
+
+dc_down:
+	$(DOCKER_COMPOSE) down
+
+logs-api:
+	$(DOCKER_COMPOSE) logs -f $(GATEWAY_BIN)
+
+logs-worker:
+	$(DOCKER_COMPOSE) logs -f $(WORKER_BIN)
+
+dc_clean:
+	$(DOCKER_COMPOSE) down -v --rmi all --remove-orphans
+
+dc_restart: down up
+
+dc_ps:
+	$(DOCKER_COMPOSE) ps
