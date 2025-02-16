@@ -2,14 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/streadway/amqp"
 	"log"
 	"net/http"
 	"strings"
 
-	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/entities"
-	"github.com/femstuff/Microservice-system-for-task-processing-and-monitoring/internal/gateway-service/usecases"
+	"api-gateway/internal/entities"
+	"api-gateway/internal/usecases"
+
 	"github.com/gin-gonic/gin"
+	"github.com/streadway/amqp"
 )
 
 type TaskHandler struct {
@@ -38,7 +39,7 @@ func (t *TaskHandler) CreateTask(c *gin.Context) {
 		return
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
 		log.Printf("Ошибка подключения к RabbitMQ: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка RabbitMQ"})
