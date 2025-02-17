@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"time"
 
 	"worker-service/config"
 	"worker-service/internal/entities"
@@ -33,6 +34,7 @@ func main() {
 	uc := usecases.NewTaskUseCase(repo)
 	handler := handlers.NewTaskHandler(uc)
 
+	time.Sleep(10 * time.Second)
 	conn, err := amqp.Dial(cfg.RabbitMQURL)
 	if err != nil {
 		log.Fatalf("Ошибка подключения к RabbitMQ: %v", err)

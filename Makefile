@@ -1,6 +1,7 @@
 GATEWAY_BIN = gateway-service
 WORKER_BIN = worker-service
 DOCKER_COMPOSE = docker compose
+K8S_DIR = ./k8s
 
 GATEWAY_DIR = ./api-gateway/cmd/gateway-service
 WORKER_DIR = ./worker-service/cmd/worker
@@ -56,3 +57,19 @@ dc_restart: down up
 
 dc_ps:
 	$(DOCKER_COMPOSE) ps
+
+k8s_apply:
+	@echo "Применяем манифесты в Kubernetes..."
+	kubectl apply -f $(K8S_DIR)
+
+k8s_delete:
+	@echo "Удаляем ресурсы из Kubernetes..."
+	kubectl delete -f $(K8S_DIR)
+
+k8s_logs_redis:
+	@echo "Логи Redis..."
+	kubectl logs -l app=redis
+
+k8s_get_pods:
+	@echo "Получение списка подов..."
+	kubectl get pods
