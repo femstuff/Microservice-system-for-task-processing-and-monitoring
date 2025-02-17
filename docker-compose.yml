@@ -46,6 +46,12 @@ services:
       - rabbitmq
     networks:
       - microservice-network
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "nc -z rabbitmq 5672" ]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+      timeout: 2s
 
 networks:
   microservice-network:
