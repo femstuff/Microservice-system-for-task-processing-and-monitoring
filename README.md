@@ -89,12 +89,12 @@
 | `make logs-api` | Показывает логи API Gateway     |
 | `make logs-worker` | Показывает логи Worker Service |
 
-## 📌 Дальнейшие планы
+## Дальнейшие планы
 -  **Интеграция Prometheus** – для сбора и мониторинга метрик.
 -  **Добавление Kafka** – для улучшения асинхронной обработки задач.
 -  **Покрытие кода тестами** – для повышения надежности системы.
 -  **Доработка Kubernetes манифестов** – для автоматического масштабирования сервисов.
 
-## 🔗 Ссылка на репозиторий
+## Ссылка на репозиторий
 [GitHub: Microservice System for Task Processing and Monitoring](https://github.com/femstuff/Microservice-system-for-task-processing-and-monitoring)
 
